@@ -5,26 +5,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Document(collection = "payment-events")
 public class PaymentEvent {
-  @Id private Integer paymentEventId;
+  @Id private String id;
 
-  @Enumerated(EnumType.STRING)
+  private Integer paymentEventId;
+
   private PaymentEventOperationType eventOperationType;
 
-  @OneToOne(mappedBy = "paymentEvent", cascade = CascadeType.ALL)
-  @ToString.Exclude
-  private Payment payment;
+  @ToString.Exclude private Payment payment;
 }

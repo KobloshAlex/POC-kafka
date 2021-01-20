@@ -5,15 +5,9 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       group-id: payment-events-listener-group-mongo
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-  jpa:
-    database: h2
-    database-platform: org.hibernate.dialect.H2Dialect
-    generate-ddl: true
-  h2:
-    console:
-      enabled: true
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:admin@payments-cluster.yzpue.mongodb.net/kafka-payments?retryWrites=true&w=majority
+      database: kafka-payments
 server:
   port: 8081
