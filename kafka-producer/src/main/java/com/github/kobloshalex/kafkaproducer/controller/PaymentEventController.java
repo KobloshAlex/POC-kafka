@@ -1,11 +1,12 @@
 package com.github.kobloshalex.kafkaproducer.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.kobloshalex.kafkaproducer.model.PaymentEvent;
+import com.github.kobloshalex.kafkaproducer.model.PaymentEventOperationType;
 import com.github.kobloshalex.kafkaproducer.service.PaymentEventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,12 +22,25 @@ public class PaymentEventController {
   @PostMapping("v1/payments")
   public final ResponseEntity<PaymentEvent> postPayment(
       final @RequestBody PaymentEvent paymentEvent) {
-    try{
+    paymentEvent.setEventOperationType(PaymentEventOperationType.POST);
+    try {
       paymentEventService.sendMessageTo(paymentEvent);
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     return ResponseEntity.status(HttpStatus.CREATED).body(paymentEvent);
+  }
+
+  @PutMapping("v1/payments")
+  public final ResponseEntity<?> updatePayment(final @RequestBody PaymentEvent paymentEvent) {
+
+    if (paymentEvent.getPaymentEventId() == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please pass the payment ID");
+    }
+
+    paymentEvent.setEventOperationType(PaymentEventOperationType.UPDATE);
+    paymentEventService.sendMessageTo(paymentEvent);
+    return ResponseEntity.status(HttpStatus.OK).body(paymentEvent);
   }
 }

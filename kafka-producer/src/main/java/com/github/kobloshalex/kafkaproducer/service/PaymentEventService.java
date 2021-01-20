@@ -12,6 +12,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class PaymentEventService {
 
+  private static final String CASH_TOPIC = "payments-cash";
+  private static final String DEBIT_TOPIC = "payments-debit";
+  private static final String CREDIT_TOPIC = "payments-credit";
+  private static final String CASH_PAYMENT_TYPE = "CASH";
+  private static final String DEBIT_PAYMENT_TYPE = "DEBIT";
+  private static final String CREDIT_PAYMENT_TYPE = "CREDIT";
+
   private final MessageProcessor messageProcessor;
 
   public PaymentEventService(MessageProcessor messageProcessor) {
@@ -20,12 +27,18 @@ public class PaymentEventService {
 
   public void sendMessageTo(PaymentEvent paymentEvent) {
     try {
-      if (paymentEvent.getPayment().getPaymentMethod().equalsIgnoreCase("CASH")) {
-        messageProcessor.sendMessage("payments-cash", paymentEvent);
-      } else if (paymentEvent.getPayment().getPaymentMethod().equalsIgnoreCase("DEBIT")) {
-        messageProcessor.sendMessage("payments-debit", paymentEvent);
-      } else if (paymentEvent.getPayment().getPaymentMethod().equalsIgnoreCase("CREDIT")) {
-        messageProcessor.sendMessage("payments-credit", paymentEvent);
+      if (paymentEvent.getPayment().getPaymentMethod().equalsIgnoreCase(CASH_PAYMENT_TYPE)) {
+        messageProcessor.sendMessage(CASH_TOPIC, paymentEvent);
+      } else if (paymentEvent
+          .getPayment()
+          .getPaymentMethod()
+          .equalsIgnoreCase(DEBIT_PAYMENT_TYPE)) {
+        messageProcessor.sendMessage(DEBIT_TOPIC, paymentEvent);
+      } else if (paymentEvent
+          .getPayment()
+          .getPaymentMethod()
+          .equalsIgnoreCase(CREDIT_PAYMENT_TYPE)) {
+        messageProcessor.sendMessage(CREDIT_TOPIC, paymentEvent);
       } else {
         throw new IllegalArgumentException("Unable to identify payment method");
       }

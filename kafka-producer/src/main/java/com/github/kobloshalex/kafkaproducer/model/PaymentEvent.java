@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentEvent {
   private Integer paymentEventId;
+  private PaymentEventOperationType eventOperationType;
   private Payment payment;
 }
