@@ -19,6 +19,7 @@ import java.util.Optional;
 @Slf4j
 public class PaymentEventPersistService {
 
+  private static final String PAYMENT_EVENT_ID = "paymentEventId";
   private final ObjectMapper objectMapper;
   private final PaymentEventRepository repository;
 
@@ -39,10 +40,10 @@ public class PaymentEventPersistService {
         break;
       case UPDATE:
         validateAndUpdate(paymentEvent);
-
         break;
       default:
         log.info("Invalid payment event");
+
     }
   }
 
@@ -61,8 +62,8 @@ public class PaymentEventPersistService {
     log.info("Successfully update payment event {}", optionalPaymentEvent.get());
 
     mongoTemplate.updateFirst(
-        new Query(Criteria.where("paymentEventId").is(paymentEvent.getPaymentEventId())),
-        new Update().set("paymentEventId", paymentEvent.getPaymentEventId()),
+        new Query(Criteria.where(PAYMENT_EVENT_ID).is(paymentEvent.getPaymentEventId())),
+        new Update().set(PAYMENT_EVENT_ID, paymentEvent.getPaymentEventId()),
         PaymentEvent.class);
   }
 

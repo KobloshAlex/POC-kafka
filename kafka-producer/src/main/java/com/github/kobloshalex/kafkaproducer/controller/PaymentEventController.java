@@ -1,5 +1,6 @@
 package com.github.kobloshalex.kafkaproducer.controller;
 
+import com.github.kobloshalex.kafkaproducer.model.Payment;
 import com.github.kobloshalex.kafkaproducer.model.PaymentEvent;
 import com.github.kobloshalex.kafkaproducer.model.PaymentEventOperationType;
 import com.github.kobloshalex.kafkaproducer.service.PaymentEventService;
@@ -42,5 +43,25 @@ public class PaymentEventController {
     paymentEvent.setEventOperationType(PaymentEventOperationType.UPDATE);
     paymentEventService.sendMessageTo(paymentEvent);
     return ResponseEntity.status(HttpStatus.OK).body(paymentEvent);
+  }
+
+  @PostMapping("v1/payments-hundred")
+  public final void postHundredPayments() throws InterruptedException {
+    for (int i = 0; i < 5; i++) {
+      paymentEventService.sendMessageTo(
+          PaymentEvent.builder()
+              .paymentEventId(123)
+              .eventOperationType(PaymentEventOperationType.POST)
+              .payment(
+                  Payment.builder()
+                      .paymentId(1)
+                      .paymentOwner("Alex")
+                      .amount(123.12)
+                      .paymentMethod("Credit")
+                      .build())
+              .build());
+
+      Thread.sleep(1000);
+    }
   }
 }
